@@ -47,9 +47,18 @@
   };
 
   function renderGrids() {
+    renderPlayerGrid(playerGrid,playerShips);
+    renderEnemyGrid(enemyGrid,enemyShips);
+  }
+
+  function renderPlayerGrid() {
 
   }
 
+  function renderEnemyGrid() {
+
+  }
+  
   function renderMessage() {
 
   }
