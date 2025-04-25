@@ -37,3 +37,12 @@
     grid-template-rows: repeat(10,20px);
     border: 2px solid black;
   }
+  .cell {
+    width: 30px; 
+    height: 30px; 
+    border: 1px solid lightgray; 
+    background-color: lightblue; 
+  }
+
+
+
