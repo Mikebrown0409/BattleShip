@@ -36,5 +36,24 @@
     turn = 'Player';
 
     shipSelected = null;
-    //need to figure out shipstoPlace
+    //need to figure out shipsToPlace
+    render();
+  }
+
+  function render () {
+    renderGrids();
+    // renderMessage();
+    // renderControls();
+  };
+
+  function renderGrids() {
+
+  }
+
+  function renderMessage() {
+
+  }
+
+  function renderControls() {
+
   }
