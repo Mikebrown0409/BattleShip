@@ -23,3 +23,18 @@
 
 
   /*----- functions -----*/
+  init();
+
+  function init() {
+    playerGrid = createEmptyGrid();
+    enemyGrid = createEmptyGrid();
+  
+    playerShips = initializeShipObjects();
+    enemyShips = initializeShipObjects();
+  
+    winner = null;
+    turn = 'Player';
+
+    shipSelected = null;
+    //need to figure out shipstoPlace
+  }
