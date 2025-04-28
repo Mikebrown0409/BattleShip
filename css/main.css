@@ -66,4 +66,8 @@
 
   } */
 
+  #play-again {
+    visibility: hidden;
+  }
+
 

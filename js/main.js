@@ -51,11 +51,14 @@
 
     const playerGridEl = document.querySelector('#player-grid');
     const enemyGridEl = document.querySelector('#enemy-grid'); 
+    const playAgainBtn = document.querySelector('play-again');
+    const shipPlacementEl = document.getElementById('ship-placement');
 
     const msgEl = document.querySelector('#message');
 
   /*----- event listeners -----*/
-
+  playerGridEl.addEventListener('click', handleShipSelect);
+  playerGridEl.addEventListener('click', handlePlacementClick);
 
   /*----- functions -----*/
   init();
@@ -64,15 +67,15 @@
     playerGrid = createEmptyGrid();
     enemyGrid = createEmptyGrid();
   
-    // playerShips = initializeShipObjects();
-    // enemyShips = initializeShipObjects();
+    playerShips = initializeShipObjects();
+    enemyShips = initializeShipObjects();
   
     winner = null;
     turn = 'Player';
     gameState = 'placement'
 
     shipSelected = null;
-    shipsToPlace = 5;
+    shipsToPlace = Object.keys(SHIP_TYPES);
 
     createDomGrid (playerGridEl, 'p');
     createDomGrid (enemyGridEl, 'e');
@@ -80,6 +83,44 @@
     render();
   }
 
+  function initializeShipObjects () {
+    return Object.entries(SHIP_TYPES).map(([key,data]) => ({
+        id: key,
+        name: data.name,
+        length: data.length,
+        cells: [],
+        hit: 0,
+        sunk: false,
+  }));
+}
+  
+  function handlePlacementClick () {
+
+  }
+
+  function handleShipSelect () {
+
+  }
+  
+  
+
+  // ship placement helper function similiar to empty grid but pushes ship when placed. Cells should now be occupied by 'ship'
+  //TODO need to verify this. Added ship validation to avoid overwriting anything.
+  function placeShip (grid, shipList, shipId, startRow, startCol) {
+    const ship = shipList.find(s => s.id === shipId);
+    if(!ship) return;
+
+    ship.cells = [];
+    for (let i = 0; i < ship.length; i++) {
+        let r = startRow;
+        let c = startCol;
+        grid[r][c] = CELL_TYPES.Ship;
+        ship.cells.push([r,c]);
+    }
+  }
+
+
+  //creates the actual cells inside adding elements to HTML.
   function createDomGrid (gridElement, prefix) {
     gridElement.innerHTML = ''; 
     for (let r =0; r < GRID_SIZE; r++) {
@@ -118,7 +159,7 @@
 
   function renderGrids() {
     renderSingleGrid(playerGridEl, playerGrid, 'p', true);
-    renderSingleGrid(playerGridEl, playerGrid, 'e', false);
+    renderSingleGrid(enemyGridEl, enemyGrid, 'e', false);
   }
 
   function renderSingleGrid(gridElement, gridData, prefix, showShips) {
@@ -149,8 +190,8 @@
 
 function renderMessage() {
     if (gameState === 'placement') {
-      if (selectedShipType) {
-        msgEl.textContent = `Place the ${SHIP_TYPES[selectedShipType].name}. Click on your grid.`;
+      if (shipSelected) {
+        msgEl.textContent = `Place the ${SHIP_TYPES[shipSelected].name}. Click on your grid.`;
       } else if (shipsToPlace.length > 0) {
         msgEl.textContent = `Select a ship to place (${shipsToPlace.length} remaining).`;
       } else {
@@ -173,7 +214,7 @@ function renderMessage() {
     shipSelectBtns.forEach(btn => {
       const shipType = btn.dataset.ship;
       btn.disabled = gameState !== 'placement' || !shipsToPlace.includes(shipType);
-      if (gameState === 'placement' && selectedShipType === shipType) {
+      if (gameState === 'placement' && shipSelected === shipType) {
            btn.classList.add('selected');
       } else {
            btn.classList.remove('selected');
