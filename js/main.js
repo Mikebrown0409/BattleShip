@@ -93,8 +93,8 @@
 
   function render () {
     renderGrids();
-    // renderMessage();
-    // renderControls();
+    renderMessage();
+    renderControls();
   };
 
   function renderGrids() {
