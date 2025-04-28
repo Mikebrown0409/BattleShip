@@ -19,6 +19,16 @@
     Miss: 3,
     Sunk: 4,
   }
+
+  //mapping for CSS classes and for render single grid to work. 
+  //TODO create these css classes. 
+  const CELL_MAP = {
+    [CELL_TYPES.Water]: 'water',
+    [CELL_TYPES.Ship]: 'ship',
+    [CELL_TYPES.Hit]: 'hit',
+    [CELL_TYPES.Miss]: 'miss',
+    [CELL_TYPES.Sunk]: 'sunk',
+  }
   
 
   /*----- state variables -----*/
@@ -57,13 +67,14 @@
   
     winner = null;
     turn = 'Player';
-    gamestate = 'placeholder'
+    gameState = 'placeholder'
 
     shipSelected = null;
     //need to figure out shipsToPlace
 
     render();
   }
+
 
   //resolved errors. Should be good, nested row and then adds water value which we have at 0 to each nested row when iterating through it. 
   // then adds row to grid. Should be 10by10 rows of '0'.
@@ -94,25 +105,61 @@
   function renderSingleGrid(gridElement, gridData, prefix, showShips) {
     for (let r = 0; r < GRID_SIZE; r++) {
         for (let c = 0; c < GRID_SIZE; c++) {
-            // Select the cell ..*Doesnt* currently work.. need to fix. We have all 0's in our grid but no column,row array set. think data.
-            const cellEl = gridElement.querySelector(`#${gridData}-r${r}c${c}`);
+            const cellEl = gridElement.querySelector(`#${prefix}-r${r}c${c}`);
 
             const state = gridData[r][c]; 
+            // for css class
+            cellEl.className = "cell";
+            
+            const stateClass = CELL_MAP[state];
+            if (stateClass) {
+                // if user grid, ships should be showing once logic is added. Ensure enemy/comp ships DO NOT show. 
+                // Circle back if needed as this should iterate the state management for calling the correct classes. 
+                // TODO Verify this actually works.
+                if (state === CELL_TYPES.Ship && showShips) {
+                   cellEl.classList.add(stateClass);
+                } else if (state !== CELL_TYPES.Ship) {
+                    // adds the other classes sunk,hit,miss during runtime. 
+                     cellEl.classList.add(stateClass);
+                }
+            }
+
         }
     }
 }
 
-
-  function renderEnemyGrid() {
-
-  }
-
-  function renderMessage() {
-
+function renderMessage() {
+    if (gameState === 'placement') {
+      if (selectedShipType) {
+        msgEl.textContent = `Place the ${SHIP_TYPES[selectedShipType].name}. Click on your grid.`;
+      } else if (shipsToPlace.length > 0) {
+        msgEl.textContent = `Select a ship to place (${shipsToPlace.length} remaining).`;
+      } else {
+        msgEl.textContent = 'Error: Placement phase but no ships left?';
+      }
+    } else if (gameState === 'firing') {
+    //   if (!winner) {
+    //     
+    //   }
+    } else if (gameState === 'gameOver') {
+      msgEl.textContent = `${winner} Wins! Congratulations!`;
+    }
   }
 
   function renderControls() {
-
-  }
+    playAgainBtn.style.visibility = gameState === 'gameOver' ? 'visible' : 'hidden';
+    shipPlacementEl.style.display = gameState === 'placement' ? 'block' : 'none';
+  
+    // Should update ship button states and make them disappear after starting.
+    shipSelectBtns.forEach(btn => {
+      const shipType = btn.dataset.ship;
+      btn.disabled = gameState !== 'placement' || !shipsToPlace.includes(shipType);
+      if (gameState === 'placement' && selectedShipType === shipType) {
+           btn.classList.add('selected');
+      } else {
+           btn.classList.remove('selected');
+      }
+    });
+  } 
 
   
