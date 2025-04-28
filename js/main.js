@@ -51,14 +51,16 @@
 
     const playerGridEl = document.querySelector('#player-grid');
     const enemyGridEl = document.querySelector('#enemy-grid'); 
-    const playAgainBtn = document.querySelector('play-again');
+    const playAgainBtn = document.querySelector('#play-again');
     const shipPlacementEl = document.getElementById('ship-placement');
+    const shipSelectBtns = document.querySelectorAll(`button[data-ship]`)
 
     const msgEl = document.querySelector('#message');
 
   /*----- event listeners -----*/
   playerGridEl.addEventListener('click', handleShipSelect);
   playerGridEl.addEventListener('click', handlePlacementClick);
+
 
   /*----- functions -----*/
   init();
