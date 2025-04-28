@@ -52,6 +52,8 @@
     const playerGridEl = document.querySelector('#player-grid');
     const enemyGridEl = document.querySelector('#enemy-grid'); 
 
+    const msgEl = document.querySelector('#message');
+
   /*----- event listeners -----*/
 
 
@@ -70,7 +72,7 @@
     gameState = 'placeholder'
 
     shipSelected = null;
-    //need to figure out shipsToPlace
+    shipsToPlace = 5;
 
     render();
   }
