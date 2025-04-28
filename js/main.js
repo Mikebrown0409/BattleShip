@@ -61,6 +61,8 @@
   playerGridEl.addEventListener('click', handleShipSelect);
   playerGridEl.addEventListener('click', handlePlacementClick);
 
+  shipSelectBtns.forEach(btn => addEventListener('click', handleShipSelect))
+
 
   /*----- functions -----*/
   init();
@@ -96,12 +98,36 @@
   }));
 }
   
-  function handlePlacementClick () {
-
+  function handlePlacementClick (evt) {
+    if (gameState !== 'placement' || shipSelected ||!evt.target.classList.contains('cell')) 
+        return; {
+        const row = parseInt(evt.target.dataset.row);
+        const col = parseInt(evt.target.dataset.col);
+        const shipData = SHIP_TYPES[shipSelected] //need to figure out shipSelect first so this has value.
+    }
   }
-
-  function handleShipSelect () {
-
+  
+  function handleShipSelect (evt) {
+    if (gameState !== 'placement') return; {
+        const shipType = evt.target.dataset.ship;
+        if (shipsToPlace.includes(shipType)) {
+            shipSelected = shipType;
+            console.log(shipSelected);
+            shipSelectBtns.forEach(btn => {
+                if (btn.dataset.ship === shipSelected) {
+                    btn.classList.add('selected')
+                } else {
+                    btn.classList.remove('selected');
+                }
+            })
+        } else {
+            msgEl.textContent = `${SHIP_TYPES[shipType].name} has already been placed.`;
+            shipSelected = null;
+            shipSelectBtns.forEach(btn => {btn.classList.remove('selected')
+            });
+        }
+        renderMessage();
+    }
   }
   
   

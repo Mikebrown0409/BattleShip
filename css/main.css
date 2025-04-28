@@ -52,22 +52,26 @@
 
   /* .cell ship {
 
-  }
+  } */
 
-  .cell hit {
+  /* .cell hit {
 
-  }
+  } */
 
-  .cell miss {
+  /* .cell miss {
 
-  }
+  } */
 
-  .cell sunk {
+  /* .cell sunk {
 
   } */
 
   #play-again {
     visibility: hidden;
   }
+
+  /* #ship-placement button {
+    
+  } */
 
 
