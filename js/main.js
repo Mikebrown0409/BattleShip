@@ -69,12 +69,29 @@
   
     winner = null;
     turn = 'Player';
-    gameState = 'placeholder'
+    gameState = 'placement'
 
     shipSelected = null;
     shipsToPlace = 5;
 
+    createDomGrid (playerGridEl, 'p');
+    createDomGrid (enemyGridEl, 'e');
+
     render();
+  }
+
+  function createDomGrid (gridElement, prefix) {
+    gridElement.innerHTML = ''; 
+    for (let r =0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.id = `${prefix}-r${r}c${c}`;
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+            gridElement.appendChild(cell);
+        }           
+    }
   }
 
 
