@@ -62,7 +62,7 @@
   playerGridEl.addEventListener('click', handleShipSelect);
   playerGridEl.addEventListener('click', handlePlacementClick);
 
-  shipSelectBtns.forEach(btn => addEventListener('click', handleShipSelect))
+  shipSelectBtns.forEach(btn => btn.addEventListener('click', handleShipSelect))
 
 
   /*----- functions -----*/
@@ -102,13 +102,34 @@
   
   function handlePlacementClick (evt) {
     if (gameState !== 'placement' || !shipSelected ||!evt.target.classList.contains('cell')) 
-        return; {
+        return; 
+
         const row = parseInt(evt.target.dataset.row);
         const col = parseInt(evt.target.dataset.col);
         const shipData = SHIP_TYPES[shipSelected]; // now need to validate before moving forward
+        
+        const isValid = placementValidation(playerGrid, shipData.length, row, col, orientation);
+        if (isValid) {
+        placeShip(playerGrid, playerShips, shipSelected, row, col, orientation);
+        
+        const placedShipId = shipSelected;
+        const placedShipName = shipData.name
+        shipSelected = null;
+        shipsToPlace = shipsToPlace.filter(shipId => shipId !== placedShipId) //creates new list for iterating
 
-    }
+          if (shipsToPlace.length === 0) {
+            gameState = 'firing';
+            msgEl.textContent = "All ships placed! Prepare for battle!";
+          } else {
+            msgEl.textContent = `${placedShipName} placed! Select the next ship.`
+          }
+
+        render();
+        } else {
+          msgEl.textContent = "Error on placement click";
+        }
   }
+  
 
   function placementValidation (grid, length, startRow, startCol, orientation) {
     for (let i = 0; i < length; i++) {
@@ -169,9 +190,9 @@
         let r = startRow;
         let c = startCol;
         if (orientation === 'horizontal') {
-          r += 1;
+          c += i;
         } else {
-          c +=1;
+          r += i;
         }
         grid[r][c] = CELL_TYPES.Ship;
         ship.cells.push([r,c]);
