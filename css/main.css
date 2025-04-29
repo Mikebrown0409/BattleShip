@@ -50,6 +50,10 @@
     background-color: lightblue; 
   }
 
+  .cell.preview {
+    background-color: aquamarine;
+  }
+
   /* .cell ship {
 
   } */

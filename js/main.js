@@ -139,9 +139,7 @@
       if (cellEl) {
         cellEl.classList.add('preview', validityClass)
       };
-
     }
-
   }
 
 
