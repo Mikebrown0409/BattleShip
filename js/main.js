@@ -82,6 +82,8 @@
   
     playerShips = initializeShipObjects();
     enemyShips = initializeShipObjects();
+
+    placeEnemyShips();
   
     winner = null;
     turn = 'Player';
@@ -108,6 +110,24 @@
   }));
 }
   
+
+  function placeEnemyShips () {
+    enemyShips.forEach(ship => {
+      let placed = false;
+      while (!placed) {
+        const orientation = Math.random() < 0.5 ? 'horizontal' : 'vertical';
+        const startRow = Math.floor(Math.random() * GRID_SIZE);
+        const startCol = Math.floor(Math.random() * GRID_SIZE);
+
+        if (placementValidation(enemyGrid, ship.length, startRow, startCol, orientation)) {
+        placeShip(enemyGrid, enemyShips, ship.id, startRow, startCol, orientation);
+        placed = true;
+        console.log(`Placed enemy ${ship.name} at [${startRow},${startCol}] ${orientation}`); 
+      }
+    }
+  });
+  }
+
   function handleCellMouseOver (evt) {
     if (gameState !== 'placement' || !shipSelected || !evt.target.classList.contains('cell')) return; 
     const row = parseInt(evt.target.dataset.row);
@@ -172,7 +192,7 @@
 
           if (shipsToPlace.length === 0) {
             gameState = 'firing';
-            msgEl.textContent = "All ships placed! Prepare for battle!";
+            msgEl.textContent = "All ships placed - Prepare for BATTLE!";
           } else {
             msgEl.textContent = `${placedShipName} placed! Select the next ship.`
           }
