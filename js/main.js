@@ -45,6 +45,7 @@
   
   let shipSelected;
   let shipsToPlace;
+  let orientation;
 
 
   /*----- cached elements  -----*/
@@ -79,6 +80,7 @@
     gameState = 'placement'
 
     shipSelected = null;
+    orientation = 'vertical'
     shipsToPlace = Object.keys(SHIP_TYPES);
 
     createDomGrid (playerGridEl, 'p');
@@ -99,13 +101,37 @@
 }
   
   function handlePlacementClick (evt) {
-    if (gameState !== 'placement' || shipSelected ||!evt.target.classList.contains('cell')) 
+    if (gameState !== 'placement' || !shipSelected ||!evt.target.classList.contains('cell')) 
         return; {
         const row = parseInt(evt.target.dataset.row);
         const col = parseInt(evt.target.dataset.col);
-        const shipData = SHIP_TYPES[shipSelected] //need to figure out shipSelect first so this has value.
+        const shipData = SHIP_TYPES[shipSelected]; // now need to validate before moving forward
+
     }
   }
+
+  function placementValidation (grid, length, startRow, startCol, orientation) {
+    for (let i = 0; i < length; i++) {
+      let r = startRow;
+      let c = startCol;
+      if (orientation === 'horizontal') {
+        c = startCol + i;
+      } else {
+        r = startRow + i;
+      }
+    
+    //grid validation check off grid
+    if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) {
+      console.log(`Out of bounds at [${r}, ${c}] for segment ${i}`);
+      return false;
+    }
+    //grid validation check for cells occupied (e.g. previous ship)
+    if (grid[r][c] !== CELL_TYPES.Water) {
+      console.log('Invalid placement');
+      return false;
+    }
+  } return true;
+}
   
   function handleShipSelect (evt) {
     if (gameState !== 'placement') return; {
@@ -134,7 +160,7 @@
 
   // ship placement helper function similiar to empty grid but pushes ship when placed. Cells should now be occupied by 'ship'
   //TODO need to verify this. Added ship validation to avoid overwriting anything.
-  function placeShip (grid, shipList, shipId, startRow, startCol) {
+  function placeShip (grid, shipList, shipId, startRow, startCol, orientation) {
     const ship = shipList.find(s => s.id === shipId);
     if(!ship) return;
 
@@ -142,6 +168,11 @@
     for (let i = 0; i < ship.length; i++) {
         let r = startRow;
         let c = startCol;
+        if (orientation === 'horizontal') {
+          r += 1;
+        } else {
+          c +=1;
+        }
         grid[r][c] = CELL_TYPES.Ship;
         ship.cells.push([r,c]);
     }
