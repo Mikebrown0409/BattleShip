@@ -54,15 +54,18 @@
     const enemyGridEl = document.querySelector('#enemy-grid'); 
     const playAgainBtn = document.querySelector('#play-again');
     const shipPlacementEl = document.getElementById('ship-placement');
-    const shipSelectBtns = document.querySelectorAll(`button[data-ship]`)
+    const shipSelectBtns = document.querySelectorAll(`button[data-ship]`);
+    const rotateBtn = document.querySelector('#orientation');
 
     const msgEl = document.querySelector('#message');
 
   /*----- event listeners -----*/
   playerGridEl.addEventListener('click', handleShipSelect);
   playerGridEl.addEventListener('click', handlePlacementClick);
+  rotateBtn.addEventListener('click',toggleOrientation);
 
-  shipSelectBtns.forEach(btn => btn.addEventListener('click', handleShipSelect))
+  shipSelectBtns.forEach(btn => btn.addEventListener('click', handleShipSelect));
+ 
 
 
   /*----- functions -----*/
@@ -197,6 +200,18 @@
         grid[r][c] = CELL_TYPES.Ship;
         ship.cells.push([r,c]);
     }
+  }
+
+  function toggleOrientation () {
+    if (orientation === 'vertical') {
+      orientation = 'horizontal';
+    } else {
+      orientation = 'vertical';
+    }
+
+    const displayOrientation = orientation.charAt(0).toUpperCase() + orientation.slice(1);
+    rotateBtn.textContent = `Rotate Ship (${displayOrientation})`;
+    console.log("Orientation changed to:", orientation);
   }
 
 
