@@ -144,7 +144,11 @@
 
 
   function handleCellMouseOut (evt) {
+    const allCells = playerGridEl.querySelectorAll('.cell');
 
+    allCells.forEach(cellElement => { 
+      cellElement.classList.remove('preview', 'valid', 'invalid');
+    });
   }
 
 

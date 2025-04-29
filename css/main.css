@@ -51,7 +51,15 @@
   }
 
   .cell.preview {
-    background-color: aquamarine;
+    background: lightblue;
+  }
+
+  .cell.preview.valid {
+    background-color: aquamarine
+  }
+
+  .cell.preview.invalid {
+    background-color: rgb(227, 32, 32);
   }
 
   /* .cell ship {
