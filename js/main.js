@@ -63,6 +63,11 @@
   playerGridEl.addEventListener('click', handleShipSelect);
   playerGridEl.addEventListener('click', handlePlacementClick);
   rotateBtn.addEventListener('click',toggleOrientation);
+  //highlight for ship select
+  playerGridEl.addEventListener('mouseover', handleCellMouseOver);
+  playerGridEl.addEventListener('mouseout', handleCellMouseOut);
+  
+
 
   shipSelectBtns.forEach(btn => btn.addEventListener('click', handleShipSelect));
  
@@ -103,6 +108,49 @@
   }));
 }
   
+  function handleCellMouseOver (evt) {
+    if (gameState !== 'placement' || !shipSelected || !evt.target.classList.contains('cell')) return; 
+    const row = parseInt(evt.target.dataset.row);
+    const col = parseInt(evt.target.dataset.col);
+    const shipLength = SHIP_TYPES[shipSelected].length;
+    
+    let previewCells = [];
+    for (let i = 0; i < shipLength; i++) {
+
+      let r = row;
+      let c = col;
+      if (orientation === 'horizontal') {
+        c = col + i;
+      } else {
+        r = row + i;
+      }
+      previewCells.push([r,c]);
+    }
+
+    const isValidPreview = placementValidation(playerGrid, shipLength, row, col, orientation);
+    const validityClass = isValidPreview ? 'valid' : 'invalid';
+
+    for (const cellCoord of previewCells) {
+      const r = cellCoord[0];
+      const c = cellCoord[1];
+      const cellId = `p-r${r}c${c}`;
+      const cellEl = document.getElementById(cellId);
+
+      if (cellEl) {
+        cellEl.classList.add('preview', validityClass)
+      };
+
+    }
+
+  }
+
+
+  function handleCellMouseOut (evt) {
+
+  }
+
+
+
   function handlePlacementClick (evt) {
     if (gameState !== 'placement' || !shipSelected ||!evt.target.classList.contains('cell')) 
         return; 
