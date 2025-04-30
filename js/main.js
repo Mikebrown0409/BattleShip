@@ -11,7 +11,6 @@
   };
 
   // cell types inside grid should cover all things that will happen.
-  //TODO map these somehow once inside grid is created
   const CELL_TYPES = {
     Water: 0,
     Ship: 1,
@@ -67,6 +66,8 @@
   playerGridEl.addEventListener('mouseover', handleCellMouseOver);
   playerGridEl.addEventListener('mouseout', handleCellMouseOut);
   
+  //firing shot evt listner
+  enemyGridEl.addEventListener('click', handleFireShot);
 
 
   shipSelectBtns.forEach(btn => btn.addEventListener('click', handleShipSelect));
@@ -109,6 +110,71 @@
         sunk: false,
   }));
 }
+
+
+  function aiTakeTurn() {
+
+  }
+
+
+  function handleFireShot (evt) {
+    if (gameState !== 'firing' || turn !== 'Player' || winner) return;
+    if (!evt.target.classList.contains('cell')) return;
+    const row = parseInt(evt.target.dataset.row);
+    const col = parseInt(evt.target.dataset.col);
+    const cellState = enemyGrid[row][col];
+
+    if (cellState === CELL_TYPES.Hit || cellState === CELL_TYPES.Miss || cellState === CELL_TYPES.Sunk) {
+      msgEl.textContent = "You have already fired at this location.";
+      return;
+  }
+
+    if (cellState === CELL_TYPES.Ship || cellState === CELL_TYPES.Water) {
+      //if ship === hit // else water === miss
+      if (cellState === CELL_TYPES.Ship) {
+        console.log('hit');
+        enemyGrid[row][col] = CELL_TYPES.Hit;
+        msgEl.textContent = "Hit!";
+
+        const hitShip = enemyShips.find(ship => {
+          const wasHit = ship.cells.some(cellCoord => {
+            return cellCoord[0] === row && cellCoord[1] === col;
+          });
+          return wasHit
+        })
+        
+        if (hitShip) {
+          hitShip.hit += 1;
+          if (hitShip.hit === hitShip.length) {
+            console.log('sunk!');
+            hitShip.sunk = true;
+            msgEl.textContent = `You sunk their ${hitShip.name}!`;
+            
+            // winner logic only applies to player atm if all ships sunk. 
+            // Maybe needs its own function to clean up this function a bit on a refactor?
+            if (enemyShips.every(ship => ship.sunk === true)) {
+              winner = 'Player';
+              gameState = 'gameOver';
+              msgEl.textContent = "You have won!";
+              render();
+              return;
+            }
+          
+          }}       
+      }
+
+      else {
+        console.log('miss');
+        enemyGrid[row][col] = CELL_TYPES.Miss;
+        msgEl.textContent = "Miss!";
+      }
+    } render();
+    if (!winner) {
+    turn = 'Enemy';
+    console.log("switching to enemy");
+    setTimeout(aiTakeTurn, 1000);
+    aiTakeTurn();
+  }}
   
 
   function placeEnemyShips () {
@@ -192,6 +258,7 @@
 
           if (shipsToPlace.length === 0) {
             gameState = 'firing';
+            console.log("Switching gameState to:", gameState);
             msgEl.textContent = "All ships placed - Prepare for BATTLE!";
           } else {
             msgEl.textContent = `${placedShipName} placed! Select the next ship.`

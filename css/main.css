@@ -66,17 +66,17 @@
     background-color: darkblue;
   }
 
-  /* .cell hit {
+  .cell.hit {
+    background-color: firebrick;
+  } 
 
-  } */
+  .cell.miss {
+    background-color: azure;
+  }
 
-  /* .cell miss {
-
-  } */
-
-  /* .cell sunk {
-
-  } */
+  .cell.sunk {
+    background-color: gray
+  }
 
   #play-again {
     visibility: hidden;
