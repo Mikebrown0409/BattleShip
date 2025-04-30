@@ -59,7 +59,7 @@
     const msgEl = document.querySelector('#message');
 
   /*----- event listeners -----*/
-  playerGridEl.addEventListener('click', handleShipSelect);
+  // playerGridEl.addEventListener('click', handleShipSelect); //causing error, duplicated efforts with data attr pulls and clickhandler
   playerGridEl.addEventListener('click', handlePlacementClick);
   rotateBtn.addEventListener('click',toggleOrientation);
   //highlight for ship select
@@ -113,13 +113,78 @@
 
 
   function aiTakeTurn() {
+    if (gameState !== 'firing' || turn !== 'Enemy' || winner ) return;
 
-  }
+    let row,col;
+    let isValidTarget = false;
+    let attempts = 0;
+    let maxAttempts = 100;
+    while (!isValidTarget && attempts < maxAttempts) {
+      row = Math.floor(Math.random() * GRID_SIZE);
+      col = Math.floor(Math.random() * GRID_SIZE);
+      const cellState = playerGrid[row][col];
+      if (cellState === CELL_TYPES.Ship || cellState === CELL_TYPES.Water) {
+        isValidTarget = true;
+        console.log(`AI target found ${row}${col} with state ${cellState}`)
+
+      } 
+    attempts++;
+    }
+
+    if (!isValidTarget) {
+      console.log('calculation error in aiTakeTurn, maybe check the while loop/max attempts')
+      msgEl.textContent = 'Enemy missed! Your turn'
+      turn = 'Player';
+      return;
+    }
+
+    const finalCellState = playerGrid[row][col];
+      //if ship === hit // else water === miss ~ AI logic
+      if (finalCellState === CELL_TYPES.Ship) {
+        console.log('AI hit');
+        playerGrid[row][col] = CELL_TYPES.Hit;
+        msgEl.textContent = `Oh no! The enemy has hit your ship!`;
+
+        const hitShip = playerShips.find(ship => {
+          const wasHit = ship.cells.some(cellCoord => {
+            return cellCoord[0] === row && cellCoord[1] === col;
+          });
+          return wasHit
+        })
+        
+        if (hitShip) {
+          hitShip.hit += 1;
+          if (hitShip.hit === hitShip.length) {
+            console.log(`AI sunk a ship lol!`);
+            hitShip.sunk = true;
+            msgEl.textContent = `Your enemy sunk your ${hitShip.name}!`;
+            
+            // copied winner logic with adjusting for AI. Need to refactor this if I change it into helper function for player. 
+            if (playerShips.every(ship => ship.sunk === true)) {
+              winner = 'Enemy';
+              gameState = 'gameOver';
+              msgEl.textContent = "You have lost :(";
+              render();
+              return;
+            }
+          
+          }}       
+      }
+
+      else {
+        console.log('miss');
+        playerGrid[row][col] = CELL_TYPES.Miss;
+        msgEl.textContent = "Enemy missed. Your turn!";
+      }
+    render();
+    if (!winner) {
+    turn = 'Player';
+    console.log("switching to player");
+    }}
 
 
   function handleFireShot (evt) {
-    if (gameState !== 'firing' || turn !== 'Player' || winner) return;
-    if (!evt.target.classList.contains('cell')) return;
+    if (gameState !== 'firing' || turn !== 'Player' || winner || !evt.target.classList.contains('cell')) return;
     const row = parseInt(evt.target.dataset.row);
     const col = parseInt(evt.target.dataset.col);
     const cellState = enemyGrid[row][col];
@@ -170,10 +235,12 @@
       }
     } render();
     if (!winner) {
-    turn = 'Enemy';
-    console.log("switching to enemy");
-    setTimeout(aiTakeTurn, 1000);
-    aiTakeTurn();
+      turn = 'Enemy'; //was able to cheat and fire multiples. OOP
+      setTimeout(() => {
+        console.log("switching to enemy");
+        msgEl.textContent = "Enemy is thinking...";
+        setTimeout(aiTakeTurn, 1000);
+      }, 1500);
   }}
   
 
@@ -259,7 +326,7 @@
           if (shipsToPlace.length === 0) {
             gameState = 'firing';
             console.log("Switching gameState to:", gameState);
-            msgEl.textContent = "All ships placed - Prepare for BATTLE!";
+            msgEl.textContent = "All ships placed! Click the enemy grid to fire!";
           } else {
             msgEl.textContent = `${placedShipName} placed! Select the next ship.`
           }
@@ -342,11 +409,13 @@
   function toggleOrientation () {
     if (orientation === 'vertical') {
       orientation = 'horizontal';
+      nextOrientation = 'vertical';
     } else {
       orientation = 'vertical';
+      nextOrientation = 'horizontal';
     }
 
-    const displayOrientation = orientation.charAt(0).toUpperCase() + orientation.slice(1);
+    const displayOrientation = nextOrientation.charAt(0).toUpperCase() + nextOrientation.slice(1);
     rotateBtn.textContent = `Rotate Ship (${displayOrientation})`;
     console.log("Orientation changed to:", orientation);
   }
@@ -434,7 +503,7 @@ function renderMessage() {
     //     
     //   }
     } else if (gameState === 'gameOver') {
-      msgEl.textContent = `${winner} Wins! Congratulations!`;
+      // msgEl.textContent = `${winner} Wins! Congratulations!`;
     }
   }
 

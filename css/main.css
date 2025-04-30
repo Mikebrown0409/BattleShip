@@ -10,6 +10,7 @@
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    background: white;
   }
 
   h1 {
@@ -63,19 +64,19 @@
   }
 
   .cell.ship {
-    background-color: darkblue;
+    background-color: gray;
   }
 
   .cell.hit {
-    background-color: firebrick;
+    background-color: red;
   } 
 
   .cell.miss {
-    background-color: azure;
+    background-color: white;
   }
 
   .cell.sunk {
-    background-color: gray
+    background-color: darkred;
   }
 
   #play-again {
