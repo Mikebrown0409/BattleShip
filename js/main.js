@@ -158,6 +158,9 @@
             console.log(`AI sunk a ship lol!`);
             hitShip.sunk = true;
             msgEl.textContent = `Your enemy sunk your ${hitShip.name}!`;
+            hitShip.cells.forEach(([r,c]) => {
+              playerGrid[r][c] = CELL_TYPES.Sunk;
+            })
             
             // copied winner logic with adjusting for AI. Need to refactor this if I change it into helper function for player. 
             if (playerShips.every(ship => ship.sunk === true)) {
@@ -214,6 +217,9 @@
             console.log('sunk!');
             hitShip.sunk = true;
             msgEl.textContent = `You sunk their ${hitShip.name}!`;
+            hitShip.cells.forEach(([r,c]) => {
+              enemyGrid[r][c] = CELL_TYPES.Sunk;
+            })
             
             // winner logic only applies to player atm if all ships sunk. 
             // Maybe needs its own function to clean up this function a bit on a refactor?
