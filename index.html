@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BattleShip</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="css/main.css">
     <script defer src="js/main.js"></script>
 
@@ -11,6 +12,7 @@
 <body>
     <h1>BATTLESHIP</h1>
     <h2 id="message">Message</h2>
+    <a href="#instructions-modal" class="instructions-link">How to Play?</a>
     <div class="gamearena">
         <div class="grid-container">
             <h3>Your Ships</h3>
@@ -38,7 +40,19 @@
         </div>
     </div>
     <button id="play-again">PLAY AGAIN </button>
+
+    <div id="instructions-modal" class="modal-overlay">
+        <div class="modal-content">
+            <a href="#" class="modal-close-button">&times;</a> 
+            <h3>How to Play:</h3>
+            <p><strong>Objective:</strong> Sink all enemy ships before they sink yours!</p>
+            <ol>
+                <li><strong>Placement:</strong> Select a ship, use the 'Rotate Ship' button to change orientation (Vertical/Horizontal), and click on your grid ('Your Ships') to place it. Place all your ships.</li>
+                <li><strong>Firing:</strong> Once placement is done, click on a square in the 'Enemy Waters' grid to fire a shot.</li>
+                <li><strong>Turns:</strong> Take turns firing at each other's grids. Red 'X' marks a hit, white ripple marks a miss. A sunk ship turns dark red.</li>
+            </ol>
+        </div>
+    </div>
    
-    
 </body>
 </html>
